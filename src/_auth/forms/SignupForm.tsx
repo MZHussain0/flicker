@@ -8,11 +8,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createUserAccount } from "@/lib/appwrite/api";
 import { signupSchema } from "@/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import * as z from "zod";
 
 const SignupForm = () => {
@@ -26,8 +28,11 @@ const SignupForm = () => {
       password: "",
     },
   });
-  function onSubmit(values: z.infer<typeof signupSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof signupSchema>) {
+    const newUser = await createUserAccount(values);
+    if (!newUser) {
+      toast.error("Something went wrong!");
+    }
   }
 
   const { isSubmitting } = formState;
